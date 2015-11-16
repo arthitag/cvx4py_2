@@ -3,6 +3,8 @@ from . exceptions import ParseError
 from cvxLexer import cvxLexer
 from ply import yacc
 from . ast.expressions import Number, Parameter, Variable #, Sum, Transpose
+from . properties.shape import Scalar, Shape, isscalar
+
 #import ast
 #http://www.google.com/url?q=http%3A%2F%2Fcvxr.com%2Fcvx%2Fdoc%2Ffuncref.html&sa=D&sntz=1&usg=AFQjCNEskkaqwhUSwDLxA59azIaw2jSIyQ
 
@@ -303,23 +305,18 @@ class cvxParser(object):
         elif isinstance(p[1], int):
             p[0] = Number(float(p[1]))
 
-        else:   #### check this and resolve this
+        else:
             variable = self.decl_variables.get(p[1], None)
 
             if not variable:
                 msg = "Unknown identifier '%s'" % p[1]
                 self._show_err(msg, p.lineno(1), p.lexpos(1))
                 raise ParseError(msg)
-            elif variable:
-                msg = "Unknown error: '%s' names *both* a variable and parameter" % p[1]
-                self._show_err(msg, p.lineno(1), p.lexpos(1))
-                raise ParseError(msg)
+
             elif variable :
                 p[0] = variable
                 self.variables[p[1]] = variable
-            elif parameter and not variable:
-                p[0] = parameter
-                self.parameters[p[1]] = parameter
+
 
     def p_error(self, t):
         print("Syntax error at '%s'" % t.value)

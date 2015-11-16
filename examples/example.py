@@ -20,6 +20,7 @@ hi %hello
 <
 >=
 <="""
+string = '1+2'
 A = np.array([[ 1., 2.], [ 0., 0.], [ 1., 3.]])
 prob = cvx4py(string, 0, locals())
 prob.solve();
